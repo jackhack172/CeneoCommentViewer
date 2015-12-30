@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<h:head>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	test
+		<h:form id="form">
+		<p:carousel value="#{productCommentsView.comments}"
+			headerText="Responsive" var="comment" responsive="true"
+			itemStyle="text-align: center">
+			<p:panelGrid columns="2" style="width:100%;margin:10px 0px"
+				columnClasses="label,value" layout="grid"
+				styleClass="ui-panelgrid-blank">
+
+				<h:outputText value="Id:" />
+				<h:outputText value="#{comment.id}" />
+
+				<h:outputText value="Author" />
+				<h:outputText value="#{comment.author}" />
+
+			</p:panelGrid>
+			<f:facet name="footer">
+	                In total there are #{fn:length(productCommentsView.comments)} cars.
+	        	</f:facet>
+		</p:carousel>
+	</h:form>
+</h:body>
+</html>

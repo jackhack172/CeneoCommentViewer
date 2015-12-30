@@ -7,6 +7,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import hd.ceneoCommentViewer.utils.HibernateUtil;
+
 public class App {
 
 	private static int COMMENTS_PER_PAGE = 10;

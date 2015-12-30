@@ -1,4 +1,4 @@
-package java.hd.ceneoCommentViewer;
+package hd.ceneoCommentViewer;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
