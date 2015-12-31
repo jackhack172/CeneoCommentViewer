@@ -24,7 +24,7 @@ public class ProductCommentsView implements Serializable {
 	private CommentService commentService;
 
 	public void initDB() {
-
+		commentService.downloadComments();
 	}
 
 	@PostConstruct

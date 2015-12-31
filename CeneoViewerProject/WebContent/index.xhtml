@@ -26,9 +26,16 @@
 				<h:outputText value="Author" />
 				<h:outputText value="#{comment.author}" />
 
+				<h:outputText value="Date" />
+				<h:outputText value="#{comment.date}" />
+
+				<h:outputText value="Summary" />
+				<h:outputText value="#{comment.summary}"
+					style="height: 150px; overflow: auto; display: block" />
+
 			</p:panelGrid>
 			<f:facet name="footer">
-	                In total there are #{fn:length(productCommentsView.comments)} cars.
+	                In total there are #{fn:length(productCommentsView.comments)} comments.
 	        	</f:facet>
 		</p:carousel>
 	</h:form>

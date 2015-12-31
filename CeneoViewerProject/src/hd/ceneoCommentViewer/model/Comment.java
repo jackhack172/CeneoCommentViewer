@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 public class Comment implements Serializable {
 
@@ -70,6 +72,7 @@ public class Comment implements Serializable {
 		this.disadvantages = disadvantages;
 	}
 
+	@Type(type="text")
 	public String getSummary() {
 		return summary;
 	}
