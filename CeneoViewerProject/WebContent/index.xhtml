@@ -13,31 +13,70 @@
 <h:body>
 	test
 		<h:form id="form">
-		<p:carousel value="#{productCommentsView.comments}"
-			headerText="Responsive" var="comment" responsive="true"
-			itemStyle="text-align: center">
-			<p:panelGrid columns="2" style="width:100%;margin:10px 0px"
-				columnClasses="label,value" layout="grid"
-				styleClass="ui-panelgrid-blank">
+		<p:inputText value="#{productCommentsView.productId}" />
+		<p:commandButton value="Search" update="productPanel, carousel"
+			icon="ui-icon-check" actionListener="#{productCommentsView.initDB}"
+			onclick="PF('pbAjax').start();" />
+		<br />
+		<p:progressBar widgetVar="pbAjax" ajax="true"
+			value="#{productCommentsView.commentService.progress}"
+			labelTemplate="{value}%" styleClass="animated" global="false">
+			<p:ajax event="complete" listener="#{productCommentsView.onComplete}"
+				oncomplete="PF('pbAjax').cancel()" />
+		</p:progressBar>
+		<br />
 
-				<h:outputText value="Id:" />
-				<h:outputText value="#{comment.id}" />
+		<p:panelGrid id="productPanel" columns="2" ajax="true">
+			<h:outputText value="Id:" />
+			<h:outputText value="#{productCommentsView.product.id}" />
 
-				<h:outputText value="Author" />
-				<h:outputText value="#{comment.author}" />
+			<h:outputText value="Brand:" />
+			<h:outputText value="#{productCommentsView.product.brand}" />
 
-				<h:outputText value="Date" />
-				<h:outputText value="#{comment.date}" />
+			<h:outputText value="Model:" />
+			<h:outputText value="#{productCommentsView.product.model}" />
 
-				<h:outputText value="Summary" />
-				<h:outputText value="#{comment.summary}"
-					style="height: 150px; overflow: auto; display: block" />
+			<h:outputText value="Type" />
+			<h:outputText value="#{productCommentsView.product.type}" />
+		</p:panelGrid>
 
-			</p:panelGrid>
-			<f:facet name="footer">
-	                In total there are #{fn:length(productCommentsView.comments)} comments.
-	        	</f:facet>
-		</p:carousel>
+		<div style="width: 100%; max-height: 350px">
+			<p:dataGrid id="carousel" value="#{productCommentsView.comments}"
+				var="comment" responsive="true" columns="3" rows="3" layout="grid"
+				paginator="true" itemStyle="height: 300px; text-align: center"
+				ajax="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="3,6,12,16,32">
+
+				<f:facet name="header">
+					Comments
+				</f:facet>
+
+				<p:panel header="#{comment.id}" style="text-align:center">
+					<p:panelGrid columns="2" style="width:100%;margin:10px 0px"
+						columnClasses="label,value" layout="grid"
+						styleClass="ui-panelgrid-blank" ajax="true">
+
+						<h:outputText value="Id:" />
+						<h:outputText value="#{comment.id}" />
+
+						<h:outputText value="Author" />
+						<h:outputText value="#{comment.author}" />
+
+						<h:outputText value="Date" />
+						<h:outputText value="#{comment.date}" />
+
+						<h:outputText value="Summary" />
+						<h:outputText value="#{comment.summary}"
+							style="height: 150px; overflow: auto; display: block" />
+
+					</p:panelGrid>
+				</p:panel>
+				<!-- 				<f:facet name="footer"> -->
+				<!-- 	                In total there are #{fn:length(productCommentsView.comments)} comments. -->
+				<!-- 	        	</f:facet> -->
+			</p:dataGrid>
+		</div>
 	</h:form>
 </h:body>
 </html>
