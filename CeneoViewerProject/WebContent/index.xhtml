@@ -33,7 +33,8 @@
 				icon="ui-icon-check" ajax="true"
 				actionListener="#{productCommentsView.transform}" />
 			<p:commandButton value="L"
-				update="productPanel, carousel, buttonPanel" disabled="#{!productCommentsView.isTransformViewState()}"
+				update="productPanel, carousel, buttonPanel"
+				disabled="#{!productCommentsView.isTransformViewState()}"
 				icon="ui-icon-check" ajax="true"
 				actionListener="#{productCommentsView.load}"
 				onclick="PF('pbAjax').start();" />
@@ -81,11 +82,17 @@
 						<h:outputText value="Id:" />
 						<h:outputText value="#{comment.id}" />
 
-						<h:outputText value="Author" />
+						<h:outputText value="Author:" />
 						<h:outputText value="#{comment.author}" />
 
-						<h:outputText value="Date" />
+						<h:outputText value="Date:" />
 						<h:outputText value="#{comment.date}" />
+
+						<h:outputText value="Mark:" />
+						<h:outputText value="#{comment.stars}" />
+
+						<h:outputText value="Recommended:" />
+						<h:outputText value="#{comment.recommended?'Yes':'No'}" />
 
 						<h:outputText value="Summary" />
 						<h:outputText value="#{comment.summary}"

@@ -61,6 +61,7 @@ public class ProductService implements Serializable {
 			String categoryName = categoryElements.text();
 
 			product = new Product();
+			product.setId(productId);
 			product.setBrand(productFullName.substring(0, productFullName.indexOf(' ')));
 			product.setModel(productFullName.substring(productFullName.indexOf(' '), productFullName.length()));
 			product.setType(categoryName);

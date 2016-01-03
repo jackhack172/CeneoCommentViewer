@@ -27,7 +27,7 @@ public class Comment implements Serializable {
 
 	private String summary;
 
-	private Integer stars;
+	private Double stars;
 
 	private String author;
 
@@ -44,7 +44,6 @@ public class Comment implements Serializable {
 	}
 
 	@Id
-	@GeneratedValue
 	@Column(unique = true, nullable = false)
 	public Integer getId() {
 		return id;
@@ -72,7 +71,7 @@ public class Comment implements Serializable {
 		this.disadvantages = disadvantages;
 	}
 
-	@Type(type="text")
+	@Type(type = "text")
 	public String getSummary() {
 		return summary;
 	}
@@ -81,11 +80,11 @@ public class Comment implements Serializable {
 		this.summary = summary;
 	}
 
-	public Integer getStars() {
+	public Double getStars() {
 		return stars;
 	}
 
-	public void setStars(Integer stars) {
+	public void setStars(Double stars) {
 		this.stars = stars;
 	}
 

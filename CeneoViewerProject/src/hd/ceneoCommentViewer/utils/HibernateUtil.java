@@ -70,29 +70,30 @@ public class HibernateUtil {
 	}
 
 	private static void insertProducts() {
-		ProductFacade productFacade = new ProductFacade();
-		Random random = new Random();
-
-		Product product = new Product();
-		product.setBrand("Intel");
-		product.setModel("i5 6300");
-
-		productFacade.createProduct(product);
+//		ProductFacade productFacade = new ProductFacade();
+//		Random random = new Random();
+//
+//		Product product = new Product();
+//		product.setId(1);
+//		product.setBrand("Intel");
+//		product.setModel("i5 6300");
+//
+//		productFacade.createProduct(product);
 	}
 
 	private static void insertComments() {
-		CommentFacade commentFacade = new CommentFacade();
-		Random random = new Random();
-
-		Comment comment = new Comment();
-		comment.setSummary("good");
-		comment.setAuthor("jan_kowalski_543");
-		
-		List <String> advantages=new ArrayList<>();
-		advantages.add("fast");
-		advantages.add("quiet");
-		comment.setAdvantages(advantages);
-
-		commentFacade.createComment(comment);
+//		CommentFacade commentFacade = new CommentFacade();
+//		Random random = new Random();
+//
+//		Comment comment = new Comment();
+//		comment.setSummary("good");
+//		comment.setAuthor("jan_kowalski_543");
+//		
+//		List <String> advantages=new ArrayList<>();
+//		advantages.add("fast");
+//		advantages.add("quiet");
+//		comment.setAdvantages(advantages);
+//
+//		commentFacade.createComment(comment);
 	}
 }

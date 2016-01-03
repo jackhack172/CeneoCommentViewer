@@ -20,30 +20,60 @@ public class Parser {
 			Elements commentsElements = doc.getElementsByClass("product-review");
 			for (Element commentElement : commentsElements) {
 				Comment comment = new Comment();
+				String id = commentElement.getElementsByClass("js_product-review-comments").attr("id");
+				Integer commentId = Integer.parseInt(id.substring(id.lastIndexOf("-") + 1, id.length()));
+				comment.setId(commentId);
+
 				comment.setAuthor(commentElement.getElementsByClass("product-reviewer").text());
 				comment.setSummary(commentElement.getElementsByClass("product-review-body").text());
 				SimpleDateFormat parserSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				comment.setDate(parserSDF.parse(commentElement.select(".review-time time").first().attr("datetime")));
+				comment.setRecommended(
+						commentElement.getElementsByClass("product-recommended").text().equals("Polecam"));
+
+				String[] starsText = commentElement.getElementsByClass("review-score-count").text().split("/");
+				comment.setStars(Double.parseDouble(starsText[0].replace(",", ".")));
+				comment.setNumberOfOpinions(
+						Integer.parseInt(commentElement.getElementById("votes-" + commentId).text()));
+				comment.setNumberOfPositiveOpinions(
+						Integer.parseInt(commentElement.getElementById("votes-yes-" + commentId).text()));
+
+				List<String> advantages = new ArrayList<>();
+				Elements advantagesElements = commentElement.select(".pros-cell li");
+				for (Element advantageElement : advantagesElements) {
+					advantages.add(advantageElement.text());
+				}
+				comment.setAdvantages(advantages);
+
+				List<String> disadvantages = new ArrayList<>();
+				Elements disadvantagesElements = commentElement.select(".cons-cell li");
+				for (Element disadvantageElement : disadvantagesElements) {
+					disadvantages.add(disadvantageElement.text());
+				}
+				comment.setDisadvantages(disadvantages);
+
 				comments.add(comment);
 			}
 		}
 		return comments;
 	}
-	
+
 	public static List<Comment> parseCommentsFromMorele(List<Document> commentsPages) throws ParseException {
 		List<Comment> comments = new ArrayList<>();
-		
-//		for (Document doc : commentsPages) {
-//			Elements commentsElements = doc.getElementsByClass("product-review");
-//			for (Element commentElement : commentsElements) {
-//				Comment comment = new Comment();
-//				comment.setAuthor(commentElement.getElementsByClass("product-reviewer").text());
-//				comment.setSummary(commentElement.getElementsByClass("product-review-body").text());
-//				SimpleDateFormat parserSDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//				comment.setDate(parserSDF.parse(commentElement.select(".review-time time").first().attr("datetime")));
-//				comments.add(comment);
-//			}
-//		}
+
+		// for (Document doc : commentsPages) {
+		// Elements commentsElements = doc.getElementsByClass("product-review");
+		// for (Element commentElement : commentsElements) {
+		// Comment comment = new Comment();
+		// comment.setAuthor(commentElement.getElementsByClass("product-reviewer").text());
+		// comment.setSummary(commentElement.getElementsByClass("product-review-body").text());
+		// SimpleDateFormat parserSDF = new SimpleDateFormat("yyyy-MM-dd
+		// HH:mm:ss");
+		// comment.setDate(parserSDF.parse(commentElement.select(".review-time
+		// time").first().attr("datetime")));
+		// comments.add(comment);
+		// }
+		// }
 		return comments;
 	}
 

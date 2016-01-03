@@ -10,8 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.hibernate.annotations.Fetch;
-
 @Entity
 public class Product implements Serializable {
 
@@ -34,7 +32,6 @@ public class Product implements Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
 	@Column(unique = true, nullable = false)
 	public Integer getId() {
 		return id;
