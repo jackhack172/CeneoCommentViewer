@@ -1,12 +1,16 @@
 package hd.ceneoCommentViewer.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.Fetch;
 
 @Entity
 public class Product implements Serializable {
@@ -22,6 +26,8 @@ public class Product implements Serializable {
 	private String model;
 	
 	private String additionalInfo;
+	
+	private List<Comment> comments;
 
 	public Product() {
 
@@ -68,5 +74,14 @@ public class Product implements Serializable {
 
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
+	}
+
+	@ElementCollection
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 }

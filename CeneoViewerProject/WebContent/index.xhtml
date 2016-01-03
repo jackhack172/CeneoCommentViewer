@@ -14,16 +14,37 @@
 	test
 		<h:form id="form">
 		<p:inputText value="#{productCommentsView.productId}" />
-		<p:commandButton value="Search" update="productPanel, carousel"
-			icon="ui-icon-check" actionListener="#{productCommentsView.initDB}"
-			onclick="PF('pbAjax').start();" />
-		<br />
-		<p:progressBar widgetVar="pbAjax" ajax="true"
-			value="#{productCommentsView.commentService.progress}"
-			labelTemplate="{value}%" styleClass="animated" global="false">
-			<p:ajax event="complete" listener="#{productCommentsView.onComplete}"
-				oncomplete="PF('pbAjax').cancel()" />
-		</p:progressBar>
+
+		<p:panel id="buttonPanel">
+			<p:commandButton value="ETL"
+				update="productPanel, carousel, buttonPanel"
+				disabled="#{!productCommentsView.isBlankViewState()}"
+				icon="ui-icon-check" actionListener="#{productCommentsView.initDB}"
+				onclick="PF('pbAjax').start();" />
+			<p:commandButton value="E"
+				update="productPanel, carousel, transformButton"
+				disabled="#{!productCommentsView.isBlankViewState()}"
+				icon="ui-icon-check" ajax="true"
+				actionListener="#{productCommentsView.extract}"
+				onclick="PF('pbAjax').start();" />
+			<p:commandButton id="transformButton" value="T"
+				update="productPanel, carousel, buttonPanel"
+				disabled="#{!productCommentsView.isExtractViewState()}"
+				icon="ui-icon-check" ajax="true"
+				actionListener="#{productCommentsView.transform}" />
+			<p:commandButton value="L"
+				update="productPanel, carousel, buttonPanel" disabled="#{!productCommentsView.isTransformViewState()}"
+				icon="ui-icon-check" ajax="true"
+				actionListener="#{productCommentsView.load}"
+				onclick="PF('pbAjax').start();" />
+			<p:progressBar widgetVar="pbAjax" ajax="true"
+				value="#{productCommentsView.ceneoDownloadService.progress}"
+				labelTemplate="{value}%" styleClass="animated" global="false">
+				<p:ajax event="complete"
+					listener="#{productCommentsView.onComplete}"
+					oncomplete="PF('pbAjax').cancel()" />
+			</p:progressBar>
+		</p:panel>
 		<br />
 
 		<p:panelGrid id="productPanel" columns="2" ajax="true">
