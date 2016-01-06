@@ -43,33 +43,4 @@ public class ProductService implements Serializable {
 	public List<Product> getAllProducts() {
 		return getProductFacade().listAll();
 	}
-
-	public Product downloadProduct(Integer productId) {
-		Document doc = null;
-		String mainLink = "http://www.ceneo.pl/";
-		String commentsFirstPageLinkPart = "#tab=spec";
-//		String productCode = "35379075";
-
-		Product product = null;
-
-		try {
-			doc = Jsoup.connect(mainLink + productId + commentsFirstPageLinkPart).get();
-			Element productNameElement = doc.getElementsByClass("product-name").first();
-			String productFullName = productNameElement.text();
-			Element categoryElements = doc.getElementsByClass("breadcrumb").last().select("span[itemprop=title]")
-					.first();
-			String categoryName = categoryElements.text();
-
-			product = new Product();
-			product.setId(productId);
-			product.setBrand(productFullName.substring(0, productFullName.indexOf(' ')));
-			product.setModel(productFullName.substring(productFullName.indexOf(' '), productFullName.length()));
-			product.setType(categoryName);
-			createProduct(product);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return product;
-	}
 }

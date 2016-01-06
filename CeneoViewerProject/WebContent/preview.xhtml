@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<h:head>
+	<title>Insert title here</title>
+</h:head>
+<h:body>
+	<h:form id="form">
+		<p:dataTable id="productDataTable" var="product"
+			value="#{previewCommentsView.products}" paginator="true"
+			paginatorPosition="bottom" rows="5">
+			<f:facet name="header">
+            Products
+        </f:facet>
+			<p:column headerText="Id">
+				<h:outputText value="#{product.id}" />
+			</p:column>
+			<p:column headerText="Type">
+				<h:outputText value="#{product.type}" />
+			</p:column>
+			<p:column headerText="Brand">
+				<h:outputText value="#{product.brand}" />
+			</p:column>
+			<p:column style="width:32px;text-align: center">
+				<p:commandButton update=":form:commentDataTable"
+					icon="ui-icon-search" title="View">
+					<f:setPropertyActionListener value="#{product.comments}"
+						target="#{previewCommentsView.comments}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+		<p:dataTable id="commentDataTable" var="comment"
+			value="#{previewCommentsView.comments}" paginator="true"
+			paginatorPosition="bottom" rows="10">
+			<f:facet name="header">
+            Basic
+        </f:facet>
+			<p:column headerText="Id">
+				<h:outputText value="#{comment.id}" />
+			</p:column>
+			<p:column headerText="Date">
+				<h:outputText value="#{comment.date}" />
+			</p:column>
+			<p:column headerText="Author">
+				<h:outputText value="#{comment.author}" />
+			</p:column>
+			<p:column headerText="Stars">
+				<h:outputText value="#{comment.stars}" />
+			</p:column>
+			<p:column headerText="Recommended">
+				<h:outputText value="#{comment.recommended}" />
+			</p:column>
+			<p:column headerText="Positive opinions">
+				<h:outputText value="#{comment.numberOfPositiveOpinions}" />
+			</p:column>
+			<p:column headerText="Number of opinions">
+				<h:outputText value="#{comment.numberOfOpinions}" />
+			</p:column>
+			<p:column style="width:32px;text-align: center">
+				<p:commandButton update=":form:commentDetail"
+					oncomplete="PF('commentDialog').show()" icon="ui-icon-search"
+					title="View">
+					<f:setPropertyActionListener value="#{comment}"
+						target="#{previewCommentsView.selectedComment}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+		<p:dialog header="Comment Info" widgetVar="commentDialog" modal="true"
+			showEffect="fade" hideEffect="fade" resizable="false">
+			<p:outputPanel id="commentDetail" style="text-align:center;">
+				<p:panelGrid columns="2"
+					rendered="#{not empty previewCommentsView.selectedComment}"
+					columnClasses="label,value">
+
+					<h:outputText value="Id:" />
+					<h:outputText value="#{previewCommentsView.selectedComment.id}" />
+
+					<h:outputText value="Author:" />
+					<h:outputText value="#{previewCommentsView.selectedComment.author}" />
+
+					<h:outputText value="Summary:" />
+					<h:outputText
+						value="#{previewCommentsView.selectedComment.summary}" />
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+	</h:form>
+</h:body>
+</html>

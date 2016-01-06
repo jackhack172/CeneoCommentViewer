@@ -1,5 +1,6 @@
 package hd.ceneoCommentViewer.utils;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,8 +11,31 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import hd.ceneoCommentViewer.model.Comment;
+import hd.ceneoCommentViewer.model.Product;
 
 public class Parser {
+
+	public static Product parseProductFromCeneo(Document productPage, Integer productId) {
+		Product product = null;
+
+		if (productPage != null && productId != null) {
+			Element productNameElement = productPage.getElementsByClass("product-name").first();
+			String productFullName = productNameElement.text();
+			Element categoryElements = productPage.getElementsByClass("breadcrumb").last()
+					.select("span[itemprop=title]").first();
+			String categoryName = categoryElements.text();
+
+			product = new Product();
+			product.setId(productId);
+			product.setBrand(productFullName.substring(0, productFullName.indexOf(' ')));
+			product.setModel(productFullName.substring(productFullName.indexOf(' '), productFullName.length()));
+			product.setType(categoryName);
+		}else{
+			System.out.println();
+		}
+
+		return product;
+	}
 
 	public static List<Comment> parseCommentsFromCeneo(List<Document> commentsPages) throws ParseException {
 		List<Comment> comments = new ArrayList<>();

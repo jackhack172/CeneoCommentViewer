@@ -26,4 +26,9 @@
 	<listener>
 		<listener-class>hd.ceneoCommentViewer.utils.HibernateListener</listener-class>
 	</listener>
+
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>bluesky</param-value>
+	</context-param>
 </web-app>

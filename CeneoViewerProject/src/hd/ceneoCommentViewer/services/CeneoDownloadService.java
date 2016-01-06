@@ -15,7 +15,7 @@ import org.jsoup.nodes.Element;
 @ManagedBean(name = "ceneoDownloadService")
 @ApplicationScoped
 public class CeneoDownloadService extends DownloadService implements Serializable {
-
+	
 	private static final long serialVersionUID = 1L;
 
 	private static int COMMENTS_PER_PAGE = 10;
@@ -26,9 +26,15 @@ public class CeneoDownloadService extends DownloadService implements Serializabl
 
 	private static String commentsNextPagesLinkPart = "/opinie-";
 
+	private static String commentsSpecPageLinkPart = "#tab=spec";
+	
 	@Override
 	public void downloadProductPage(Integer productId) {
-
+		try {
+			productPage = Jsoup.connect(mainLink + productId + commentsSpecPageLinkPart).get();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	@Override
@@ -39,7 +45,7 @@ public class CeneoDownloadService extends DownloadService implements Serializabl
 		Integer numberOfComments = 0;
 
 		try {
-			doc = Jsoup.connect(mainLink + productId + commentsFirstPageLinkPart).get();
+			doc = Jsoup.connect(mainLink + productId + commentsFirstPageLinkPart).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0").get();
 			commentsPages.add(doc);
 
 			Element commentsPaginator = doc.select("span[itemprop=reviewCount]").first();

@@ -6,7 +6,7 @@
 	<session-factory>
 		<!-- Database connection properties - Driver, URL, user, password -->
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ceneo</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ceneo?characterEncoding=UTF-8</property>
 		<property name="hibernate.connection.username">ceneo</property>
 		<property name="hibernate.connection.password">ceneo</property>
 		<property name="hibernate.connection.charSet">UTF-8</property>

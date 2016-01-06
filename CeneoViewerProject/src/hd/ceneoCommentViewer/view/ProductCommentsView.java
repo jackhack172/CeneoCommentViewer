@@ -9,6 +9,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
+import org.jsoup.nodes.Document;
+
 import hd.ceneoCommentViewer.model.Comment;
 import hd.ceneoCommentViewer.model.Product;
 import hd.ceneoCommentViewer.services.CommentService;
@@ -42,12 +44,15 @@ public class ProductCommentsView implements Serializable {
 	public void initDB() {
 		if (productId != null) {
 			viewState = ViewState.EXTRACT;
-			product = productService.downloadProduct(productId);
+			ceneoDownloadService.downloadProductPage(productId);
+			product = Parser.parseProductFromCeneo(ceneoDownloadService.getProductPage(), productId);
 			ceneoDownloadService.downloadCommentsPages(productId);
 			viewState = ViewState.TRANSFORM;
 			try {
 				comments = Parser.parseCommentsFromCeneo(ceneoDownloadService.getCommentsPages());
 				viewState = ViewState.LOAD;
+				product.setComments(comments);
+				productService.createProduct(product);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -57,7 +62,9 @@ public class ProductCommentsView implements Serializable {
 	public void extract() {
 		if (productId != null) {
 			viewState = ViewState.EXTRACT;
-			product = productService.downloadProduct(productId);
+			ceneoDownloadService.downloadProductPage(productId);
+			product = Parser.parseProductFromCeneo(ceneoDownloadService.getProductPage(), productId);
+//			productService.createProduct(product);
 			ceneoDownloadService.downloadCommentsPages(productId);
 		}
 	}
@@ -73,9 +80,12 @@ public class ProductCommentsView implements Serializable {
 
 	public void load() {
 		viewState = ViewState.LOAD;
+		product.setComments(comments);
 		for (Comment comment : comments) {
 			commentService.createComment(comment);
 		}
+		
+		productService.createProduct(product);
 		viewState = ViewState.BLANK;
 	}
 

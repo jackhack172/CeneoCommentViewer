@@ -18,23 +18,19 @@
 		<p:panel id="buttonPanel">
 			<p:commandButton value="ETL"
 				update="productPanel, carousel, buttonPanel"
-				disabled="#{!productCommentsView.isBlankViewState()}"
 				icon="ui-icon-check" actionListener="#{productCommentsView.initDB}"
 				onclick="PF('pbAjax').start();" />
 			<p:commandButton value="E"
 				update="productPanel, carousel, transformButton"
-				disabled="#{!productCommentsView.isBlankViewState()}"
 				icon="ui-icon-check" ajax="true"
 				actionListener="#{productCommentsView.extract}"
 				onclick="PF('pbAjax').start();" />
 			<p:commandButton id="transformButton" value="T"
 				update="productPanel, carousel, buttonPanel"
-				disabled="#{!productCommentsView.isExtractViewState()}"
 				icon="ui-icon-check" ajax="true"
 				actionListener="#{productCommentsView.transform}" />
 			<p:commandButton value="L"
 				update="productPanel, carousel, buttonPanel"
-				disabled="#{!productCommentsView.isTransformViewState()}"
 				icon="ui-icon-check" ajax="true"
 				actionListener="#{productCommentsView.load}"
 				onclick="PF('pbAjax').start();" />
