@@ -91,7 +91,7 @@
 
 		<dependency>
 			<groupId>org.primefaces.themes</groupId>
-			<artifactId>bluesky</artifactId>
+			<artifactId>home</artifactId>
 			<version>1.0.10</version>
 		</dependency>
 	</dependencies>

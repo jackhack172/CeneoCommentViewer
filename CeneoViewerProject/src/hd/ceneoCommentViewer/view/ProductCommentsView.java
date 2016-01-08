@@ -5,11 +5,14 @@ import java.text.ParseException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
-import org.jsoup.nodes.Document;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 import hd.ceneoCommentViewer.model.Comment;
 import hd.ceneoCommentViewer.model.Product;
@@ -32,6 +35,14 @@ public class ProductCommentsView implements Serializable {
 
 	private Integer productId;
 
+	private List<Comment> previewComments;
+
+	private List<Product> previewProducts;
+
+	private Product selectedPreviewProduct;
+
+	private Comment selectedPreviewComment;
+
 	@ManagedProperty("#{commentService}")
 	private CommentService commentService;
 
@@ -41,21 +52,11 @@ public class ProductCommentsView implements Serializable {
 	@ManagedProperty("#{ceneoDownloadService}")
 	private DownloadService ceneoDownloadService;
 
-	public void initDB() {
+	public void etl() {
 		if (productId != null) {
-			viewState = ViewState.EXTRACT;
-			ceneoDownloadService.downloadProductPage(productId);
-			product = Parser.parseProductFromCeneo(ceneoDownloadService.getProductPage(), productId);
-			ceneoDownloadService.downloadCommentsPages(productId);
-			viewState = ViewState.TRANSFORM;
-			try {
-				comments = Parser.parseCommentsFromCeneo(ceneoDownloadService.getCommentsPages());
-				viewState = ViewState.LOAD;
-				product.setComments(comments);
-				productService.createProduct(product);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			extract();
+			transform();
+			load();
 		}
 	}
 
@@ -64,7 +65,6 @@ public class ProductCommentsView implements Serializable {
 			viewState = ViewState.EXTRACT;
 			ceneoDownloadService.downloadProductPage(productId);
 			product = Parser.parseProductFromCeneo(ceneoDownloadService.getProductPage(), productId);
-//			productService.createProduct(product);
 			ceneoDownloadService.downloadCommentsPages(productId);
 		}
 	}
@@ -84,14 +84,29 @@ public class ProductCommentsView implements Serializable {
 		for (Comment comment : comments) {
 			commentService.createComment(comment);
 		}
-		
+
 		productService.createProduct(product);
+		previewProducts = productService.getAllProducts();
 		viewState = ViewState.BLANK;
 	}
 
 	@PostConstruct
 	public void init() {
+		previewProducts = productService.getAllProducts();
+	}
 
+	public void onRowSelect(SelectEvent event) {
+		selectedPreviewProduct = (Product) event.getObject();
+		FacesMessage msg = new FacesMessage("Product selected: " + selectedPreviewProduct.getId());
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		previewComments = selectedPreviewProduct.getComments();
+	}
+
+	public void onRowUnselect(UnselectEvent event) {
+		FacesMessage msg = new FacesMessage("Product unselected: " + ((Product) event.getObject()).getId());
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		selectedPreviewProduct = null;
+		previewComments = null;
 	}
 
 	public List<Comment> getComments() {
@@ -178,6 +193,38 @@ public class ProductCommentsView implements Serializable {
 
 	public boolean isLoadViewState() {
 		return viewState == ViewState.LOAD;
+	}
+
+	public List<Comment> getPreviewComments() {
+		return previewComments;
+	}
+
+	public void setPreviewComments(List<Comment> previewComments) {
+		this.previewComments = previewComments;
+	}
+
+	public List<Product> getPreviewProducts() {
+		return previewProducts;
+	}
+
+	public void setPreviewProducts(List<Product> previewProducts) {
+		this.previewProducts = previewProducts;
+	}
+
+	public Product getSelectedPreviewProduct() {
+		return selectedPreviewProduct;
+	}
+
+	public void setSelectedPreviewProduct(Product selectedPreviewProduct) {
+		this.selectedPreviewProduct = selectedPreviewProduct;
+	}
+
+	public Comment getSelectedPreviewComment() {
+		return selectedPreviewComment;
+	}
+
+	public void setSelectedPreviewComment(Comment selectedPreviewComment) {
+		this.selectedPreviewComment = selectedPreviewComment;
 	}
 
 	public enum ViewState {

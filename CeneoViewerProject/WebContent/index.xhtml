@@ -11,96 +11,163 @@
 	<title>Insert title here</title>
 </h:head>
 <h:body>
-	test
-		<h:form id="form">
-		<p:inputText value="#{productCommentsView.productId}" />
+	<p:growl id="msgs" showDetail="true" />
 
-		<p:panel id="buttonPanel">
-			<p:commandButton value="ETL"
-				update="productPanel, carousel, buttonPanel"
-				icon="ui-icon-check" actionListener="#{productCommentsView.initDB}"
-				onclick="PF('pbAjax').start();" />
-			<p:commandButton value="E"
-				update="productPanel, carousel, transformButton"
-				icon="ui-icon-check" ajax="true"
-				actionListener="#{productCommentsView.extract}"
-				onclick="PF('pbAjax').start();" />
-			<p:commandButton id="transformButton" value="T"
-				update="productPanel, carousel, buttonPanel"
-				icon="ui-icon-check" ajax="true"
-				actionListener="#{productCommentsView.transform}" />
-			<p:commandButton value="L"
-				update="productPanel, carousel, buttonPanel"
-				icon="ui-icon-check" ajax="true"
-				actionListener="#{productCommentsView.load}"
-				onclick="PF('pbAjax').start();" />
-			<p:progressBar widgetVar="pbAjax" ajax="true"
-				value="#{productCommentsView.ceneoDownloadService.progress}"
-				labelTemplate="{value}%" styleClass="animated" global="false">
-				<p:ajax event="complete"
-					listener="#{productCommentsView.onComplete}"
-					oncomplete="PF('pbAjax').cancel()" />
-			</p:progressBar>
-		</p:panel>
-		<br />
+	<h3>Jakiś tytuł</h3>
+	<h:form id="form">
+		<p:messages id="messages" showDetail="true" autoUpdate="true"
+			closable="true" />
 
-		<p:panelGrid id="productPanel" columns="2" ajax="true">
-			<h:outputText value="Id:" />
-			<h:outputText value="#{productCommentsView.product.id}" />
+		<p:accordionPanel id="accordionPanel" cache="true">
+			<p:tab title="Ładowanie danych">
+				<p:inputText value="#{productCommentsView.productId}" />
 
-			<h:outputText value="Brand:" />
-			<h:outputText value="#{productCommentsView.product.brand}" />
-
-			<h:outputText value="Model:" />
-			<h:outputText value="#{productCommentsView.product.model}" />
-
-			<h:outputText value="Type" />
-			<h:outputText value="#{productCommentsView.product.type}" />
-		</p:panelGrid>
-
-		<div style="width: 100%; max-height: 350px">
-			<p:dataGrid id="carousel" value="#{productCommentsView.comments}"
-				var="comment" responsive="true" columns="3" rows="3" layout="grid"
-				paginator="true" itemStyle="height: 300px; text-align: center"
-				ajax="true"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="3,6,12,16,32">
-
-				<f:facet name="header">
-					Comments
-				</f:facet>
-
-				<p:panel header="#{comment.id}" style="text-align:center">
-					<p:panelGrid columns="2" style="width:100%;margin:10px 0px"
-						columnClasses="label,value" layout="grid"
-						styleClass="ui-panelgrid-blank" ajax="true">
-
-						<h:outputText value="Id:" />
-						<h:outputText value="#{comment.id}" />
-
-						<h:outputText value="Author:" />
-						<h:outputText value="#{comment.author}" />
-
-						<h:outputText value="Date:" />
-						<h:outputText value="#{comment.date}" />
-
-						<h:outputText value="Mark:" />
-						<h:outputText value="#{comment.stars}" />
-
-						<h:outputText value="Recommended:" />
-						<h:outputText value="#{comment.recommended?'Yes':'No'}" />
-
-						<h:outputText value="Summary" />
-						<h:outputText value="#{comment.summary}"
-							style="height: 150px; overflow: auto; display: block" />
-
-					</p:panelGrid>
+				<p:panel id="buttonPanel">
+					<p:commandButton value="ETL" update="buttonPanel, productDataTable"
+						icon="ui-icon-check" actionListener="#{productCommentsView.etl}"
+						onclick="PF('pbAjax').start();" />
+					<p:commandButton value="E" update="transformButton"
+						icon="ui-icon-check" ajax="true"
+						actionListener="#{productCommentsView.extract}"
+						onclick="PF('pbAjax').start();" />
+					<p:commandButton id="transformButton" value="T"
+						update="buttonPanel" icon="ui-icon-check" ajax="true"
+						actionListener="#{productCommentsView.transform}" />
+					<p:commandButton value="L" update="buttonPanel, productDataTable"
+						icon="ui-icon-check" ajax="true"
+						actionListener="#{productCommentsView.load}"
+						onclick="PF('pbAjax').start();" />
+					<p:progressBar widgetVar="pbAjax" ajax="true"
+						value="#{productCommentsView.ceneoDownloadService.progress}"
+						labelTemplate="{value}%" styleClass="animated" global="false">
+						<p:ajax event="complete"
+							listener="#{productCommentsView.onComplete}"
+							oncomplete="PF('pbAjax').cancel()" />
+					</p:progressBar>
 				</p:panel>
-				<!-- 				<f:facet name="footer"> -->
-				<!-- 	                In total there are #{fn:length(productCommentsView.comments)} comments. -->
-				<!-- 	        	</f:facet> -->
-			</p:dataGrid>
-		</div>
+				<br />
+			</p:tab>
+			<p:tab title="Podgląd">
+				<h1>test</h1>
+				<p:dataTable id="productDataTable" var="product"
+					value="#{productCommentsView.previewProducts}"
+					selectionMode="single" paginator="true" paginatorPosition="bottom"
+					rows="10" selection="#{productCommentsView.selectedPreviewProduct}"
+					rowKey="#{product.id}" ajax="true">
+					<f:facet name="header">
+			            Produkt
+			        </f:facet>
+					<p:ajax event="rowSelect"
+						listener="#{productCommentsView.onRowSelect}"
+						update="form:messages, :form:accordionPanel:commentsDataTable" />
+					<p:ajax event="rowUnselect"
+						listener="#{productCommentsView.onRowUnselect}"
+						update="form:messages, :form:accordionPanel:commentsDataTable" />
+					<p:column headerText="Id">
+						<h:outputText value="#{product.id}" />
+					</p:column>
+					<p:column headerText="Model">
+						<h:outputText value="#{product.model}" />
+					</p:column>
+					<p:column headerText="Marka">
+						<h:outputText value="#{product.brand}" />
+					</p:column>
+					<p:column headerText="Typ">
+						<h:outputText value="#{product.type}" />
+					</p:column>
+					<p:column headerText="Dodatkowe informacje">
+						<h:outputText value="#{product.additionalInfo}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:dataTable id="commentsDataTable" var="comment"
+					value="#{productCommentsView.previewComments}"
+					selectionMode="single" paginator="true" paginatorPosition="bottom"
+					rows="10" selection="#{productCommentsView.selectedPreviewComment}"
+					rowKey="#{comment.id}" ajax="true">
+					<f:facet name="header">
+			            Komentarze
+			        </f:facet>
+					<p:column headerText="Id">
+						<h:outputText value="#{comment.id}" />
+					</p:column>
+					<p:column headerText="Autor">
+						<h:outputText value="#{comment.author}" />
+					</p:column>
+					<p:column headerText="Ocena">
+						<h:outputText value="#{comment.stars}" />
+					</p:column>
+					<p:column headerText="Data">
+						<h:outputText value="#{comment.date}" />
+					</p:column>
+					<p:column headerText="Zalety"
+						style="width: 46px; text-align: center">
+						<p:commandButton update="form:accordionPanel:advantagesDiv"
+							oncomplete="PF('commentAdvantages').show('#{component.clientId}')"
+							icon="ui-icon-search" title="View">
+							<f:setPropertyActionListener value="#{comment}"
+								target="#{productCommentsView.selectedPreviewComment}" />
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Wady" style="width: 46px; text-align: center">
+						<p:commandButton update="form:accordionPanel:disadvantagesDiv"
+							oncomplete="PF('commentDisadvantages').show('#{component.clientId}');"
+							icon="ui-icon-search" title="View">
+							<f:setPropertyActionListener value="#{comment}"
+								target="#{productCommentsView.selectedPreviewComment}" />
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Treść"
+						style="width: 46px; text-align: center">
+						<p:commandButton update="form:accordionPanel:summaryDiv"
+							oncomplete="PF('commentSummary').show('#{component.clientId}')"
+							icon="ui-icon-search" title="View">
+							<f:setPropertyActionListener value="#{comment}"
+								target="#{productCommentsView.selectedPreviewComment}" />
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Pozytywne opinie">
+						<h:outputText value="#{comment.numberOfPositiveOpinions}" />
+					</p:column>
+					<p:column headerText="Opinie">
+						<h:outputText value="#{comment.numberOfOpinions}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:overlayPanel widgetVar="commentAdvantages" showEffect="fade"
+					hideEffect="fade" dismissable="false" showCloseIcon="true">
+					<p:outputPanel id="advantagesDiv" style="text-align: justify;">
+						<ul>
+							<ui:repeat
+								value="#{productCommentsView.selectedPreviewComment.advantages}"
+								var="advantage">
+								<li><h:outputText value="#{advantage}" /></li>
+							</ui:repeat>
+						</ul>
+					</p:outputPanel>
+				</p:overlayPanel>
+				<p:overlayPanel widgetVar="commentDisadvantages" showEffect="fade"
+					hideEffect="fade" dismissable="false" showCloseIcon="true">
+					<p:outputPanel id="disadvantagesDiv" style="text-align: justify;">
+						<ul>
+							<ui:repeat
+								value="#{productCommentsView.selectedPreviewComment.disadvantages}"
+								var="disadvantage">
+								<li><h:outputText value="#{disadvantage}" /></li>
+							</ui:repeat>
+						</ul>
+					</p:outputPanel>
+				</p:overlayPanel>
+				<p:overlayPanel widgetVar="commentSummary" showEffect="fade"
+					hideEffect="fade" dismissable="false" showCloseIcon="true"
+					style="max-width: 50%; max-height: 60%; width: auto; height: auto;">
+					<p:outputPanel id="summaryDiv" style="text-align: justify;">
+						<h:outputText
+							value="#{productCommentsView.selectedPreviewComment.summary}" />
+					</p:outputPanel>
+				</p:overlayPanel>
+			</p:tab>
+		</p:accordionPanel>
 	</h:form>
 </h:body>
 </html>
