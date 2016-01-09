@@ -54,6 +54,7 @@ public class Comment implements Serializable {
 	}
 
 	@ElementCollection
+	@Type(type = "text")
 	public List<String> getAdvantages() {
 		return advantages;
 	}
@@ -63,6 +64,7 @@ public class Comment implements Serializable {
 	}
 
 	@ElementCollection
+	@Type(type = "text")
 	public List<String> getDisadvantages() {
 		return disadvantages;
 	}

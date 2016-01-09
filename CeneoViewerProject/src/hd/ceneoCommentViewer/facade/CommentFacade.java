@@ -19,6 +19,19 @@ public class CommentFacade implements Serializable {
 		commentDAO.commitAndCloseTransaction();
 	}
 
+	public void updateComment(Comment comment) {
+		commentDAO.beginTransaction();
+		commentDAO.update(comment);
+		commentDAO.commitAndCloseTransaction();
+	}
+	
+	public Comment findComment(int commentId) {
+		commentDAO.beginTransaction();
+		Comment comment = commentDAO.find(commentId);
+		commentDAO.closeTransaction();
+		return comment;
+	}
+	
 	public List<Comment> listAll() {
 		commentDAO.beginTransaction();
 		List<Comment> result = commentDAO.findAll();
@@ -30,5 +43,9 @@ public class CommentFacade implements Serializable {
 		commentDAO.beginTransaction();
 		commentDAO.delete(comment);
 		commentDAO.commitAndCloseTransaction();
+	}
+
+	public void closeTransaction() {
+		commentDAO.beginTransaction();
 	}
 }

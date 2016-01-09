@@ -33,12 +33,17 @@ public class ProductService implements Serializable {
 		return productFacade;
 	}
 
-	public void createProduct(Product product) {
+	public boolean createProduct(Product product) {
 		try {
-			getProductFacade().createProduct(product);
+			if (getProductFacade().findProduct(product.getId()) == null) {
+				getProductFacade().createProduct(product);
+				return true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			getProductFacade().closeTransaction();
 		}
+		return false;
 	}
 
 	public void updateProduct(Product product) {

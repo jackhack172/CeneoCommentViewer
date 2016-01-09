@@ -53,7 +53,7 @@ public class ProductCommentsView implements Serializable {
 
 	@ManagedProperty("#{ceneoDownloadService}")
 	private DownloadService ceneoDownloadService;
-	
+
 	@ManagedProperty("#{moreleDownloadService}")
 	private DownloadService moreleDownloadService;
 
@@ -67,7 +67,7 @@ public class ProductCommentsView implements Serializable {
 		productService.deleteAllProducts();
 		previewProducts = productService.getAllProducts();
 		selectedPreviewProduct = null;
-		
+
 		commentService.deleteAllComments();
 		previewComments = null;
 
@@ -78,23 +78,31 @@ public class ProductCommentsView implements Serializable {
 
 	public void etl() {
 		if (productId != null) {
-			extract();
-			transform();
-			load();
+			try {
+				extract();
+				transform();
+				load();
+			} catch (IOException e) {
+				FacesContext facesContext = FacesContext.getCurrentInstance();
+				facesContext.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN, "Info", "Brak produktu o podanym id"));
+			}
 		}
 	}
 
-	public void extract() {
+	public void extract() throws IOException {
 		if (productId != null) {
 			viewState = ViewState.EXTRACT;
 			ceneoDownloadService.downloadProductPage(productId);
 			product = Parser.parseProductFromCeneo(ceneoDownloadService.getProductPage(), productId);
 			ceneoDownloadService.downloadCommentsPages(productId);
 			moreleDownloadService.downloadCommentsPages(productId);
-			
+
 			FacesContext facesContext = FacesContext.getCurrentInstance();
-			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
-					"Liczba wczytanyc stron: " + ceneoDownloadService.getCommentsPages().size()));
+			facesContext.addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
+							"Liczba wczytanych stron: " + (ceneoDownloadService.getCommentsPages().size()
+									+ moreleDownloadService.getCommentsPages().size() + 1)));
 
 		}
 	}
@@ -103,11 +111,10 @@ public class ProductCommentsView implements Serializable {
 		viewState = ViewState.TRANSFORM;
 		try {
 			comments = Parser.parseCommentsFromCeneo(ceneoDownloadService.getCommentsPages());
-			if(!moreleDownloadService.getCommentsPages().isEmpty()){
+			if (!moreleDownloadService.getCommentsPages().isEmpty()) {
 				comments.addAll(Parser.parseCommentsFromMorele(moreleDownloadService.getCommentsPages()));
 			}
 
-			
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
 					"Liczba odczytanych komentarzy: " + comments.size()));
@@ -117,25 +124,24 @@ public class ProductCommentsView implements Serializable {
 	}
 
 	public void load() {
+		int recordsNumber = 0;
 		viewState = ViewState.LOAD;
 		product.setComments(comments);
 		for (Comment comment : comments) {
-			commentService.createComment(comment);
+			if (commentService.createComment(comment)) {
+				recordsNumber++;
+			}
 		}
 
-		productService.createProduct(product);
+		if (productService.createProduct(product)) {
+			recordsNumber++;
+		}
 		previewProducts = productService.getAllProducts();
 		viewState = ViewState.BLANK;
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		facesContext.addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Liczba komentarzy zapisanych do bazy: "
-						+ comments.size() + "\nLiczba produktów zapisanyc do bazy: " + 1));
+		facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
+				"Liczba rekordów zapisanych do bazy: " + recordsNumber));
 	}
-	
-	public void preProcessPDF(Object document) throws IOException, DocumentException {
-        String csv =  (String) document;
-        System.out.println(csv);
-    }
 
 	@PostConstruct
 	public void init() {
@@ -203,7 +209,7 @@ public class ProductCommentsView implements Serializable {
 	public void setCeneoDownloadService(DownloadService ceneoDownloadService) {
 		this.ceneoDownloadService = ceneoDownloadService;
 	}
-	
+
 	public DownloadService getMoreleDownloadService() {
 		return moreleDownloadService;
 	}

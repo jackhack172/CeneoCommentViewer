@@ -16,6 +16,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import hd.ceneoCommentViewer.facade.CommentFacade;
 import hd.ceneoCommentViewer.model.Comment;
 import hd.ceneoCommentViewer.model.Product;
@@ -35,10 +37,24 @@ public class CommentService implements Serializable {
 		return commentFacade;
 	}
 
-	public void createComment(Comment comment) {
+	public boolean createComment(Comment comment) {
 		try {
-			getCommentFacade().createComment(comment);
-			System.out.println("Dodano komentarz " + comment.getId());
+			if (getCommentFacade().findComment(comment.getId()) == null) {
+				getCommentFacade().createComment(comment);
+				return true;
+			} else {
+				getCommentFacade().updateComment(comment);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			getCommentFacade().closeTransaction();
+		}
+		return false;
+	}
+
+	public void updateComment(Comment comment) {
+		try {
+			getCommentFacade().updateComment(comment);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

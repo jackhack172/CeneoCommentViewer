@@ -1,10 +1,10 @@
 package hd.ceneoCommentViewer.facade;
 
-import hd.ceneoCommentViewer.dao.ProductDAO;
-import hd.ceneoCommentViewer.model.Product;
-
 import java.io.Serializable;
 import java.util.List;
+
+import hd.ceneoCommentViewer.dao.ProductDAO;
+import hd.ceneoCommentViewer.model.Product;
 
 public class ProductFacade implements Serializable {
 
@@ -25,7 +25,10 @@ public class ProductFacade implements Serializable {
 	}
 
 	public Product findProduct(int productId) {
-		return null;
+		productDAO.beginTransaction();
+		Product product = productDAO.find(productId);
+		productDAO.closeTransaction();
+		return product;
 	}
 
 	public List<Product> listAll() {
@@ -39,5 +42,9 @@ public class ProductFacade implements Serializable {
 		productDAO.beginTransaction();
 		productDAO.delete(product);
 		productDAO.commitAndCloseTransaction();
+	}
+
+	public void closeTransaction() {
+		productDAO.beginTransaction();
 	}
 }

@@ -14,7 +14,7 @@
 	<h:outputStylesheet library="css" name="style.css" target="head" />
 	<p:growl id="msgs" showDetail="true" />
 
-	<h1>Jakiś tytuł</h1>
+	<h1>Przeglądarka komentarzy</h1>
 	<h:form id="form">
 		<p:growl id="messages" showDetail="true" sticky="true" closable="true" />
 
@@ -107,6 +107,12 @@
 					<p:column headerText="Data">
 						<h:outputText value="#{comment.date}" />
 					</p:column>
+					<p:column headerText="Pozytywne opinie">
+						<h:outputText value="#{comment.numberOfPositiveOpinions}" />
+					</p:column>
+					<p:column headerText="Opinie">
+						<h:outputText value="#{comment.numberOfOpinions}" />
+					</p:column>
 					<p:column headerText="Zalety"
 						style="width: 46px; text-align: center">
 						<p:commandButton update="form:accordionPanel:advantagesDiv"
@@ -132,12 +138,6 @@
 							<f:setPropertyActionListener value="#{comment}"
 								target="#{productCommentsView.selectedPreviewComment}" />
 						</p:commandButton>
-					</p:column>
-					<p:column headerText="Pozytywne opinie">
-						<h:outputText value="#{comment.numberOfPositiveOpinions}" />
-					</p:column>
-					<p:column headerText="Opinie">
-						<h:outputText value="#{comment.numberOfOpinions}" />
 					</p:column>
 				</p:dataTable>
 

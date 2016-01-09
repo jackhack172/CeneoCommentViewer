@@ -78,7 +78,6 @@ public class Parser {
 					disadvantages.add(disadvantageElement.text());
 				}
 				comment.setDisadvantages(disadvantages);
-
 				comments.add(comment);
 			}
 		}

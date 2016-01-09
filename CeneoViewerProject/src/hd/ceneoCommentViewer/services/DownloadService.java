@@ -1,5 +1,6 @@
 package hd.ceneoCommentViewer.services;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
@@ -12,7 +13,7 @@ public abstract class DownloadService {
 
 	private int progress = 0;
 
-	public abstract void downloadProductPage(Integer productId);
+	public abstract void downloadProductPage(Integer productId) throws IOException;
 
 	public abstract void downloadCommentsPages(Integer productId);
 
