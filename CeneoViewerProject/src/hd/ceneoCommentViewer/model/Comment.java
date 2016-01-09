@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,8 +19,8 @@ import org.hibernate.annotations.Type;
 public class Comment implements Serializable {
 
 	private static final long serialVersionUID = -5314336457766591759L;
-
-	private Integer id;
+	
+	private CommentId id;
 
 	private List<String> advantages;
 
@@ -43,13 +44,12 @@ public class Comment implements Serializable {
 
 	}
 
-	@Id
-	@Column(unique = true, nullable = false)
-	public Integer getId() {
+	@EmbeddedId
+	public CommentId getId(){
 		return id;
 	}
-
-	public void setId(Integer id) {
+	
+	public void setId(CommentId id){
 		this.id = id;
 	}
 

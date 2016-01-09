@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import hd.ceneoCommentViewer.model.Comment;
+import hd.ceneoCommentViewer.model.CommentId;
 import hd.ceneoCommentViewer.model.Product;
 
 public class Parser {
@@ -48,7 +49,7 @@ public class Parser {
 			for (Element commentElement : commentsElements) {
 				Comment comment = new Comment();
 				String id = commentElement.getElementsByClass("js_product-review-comments").attr("id");
-				Integer commentId = Integer.parseInt(id.substring(id.lastIndexOf("-") + 1, id.length()));
+				CommentId commentId = new CommentId(Integer.parseInt(id.substring(id.lastIndexOf("-") + 1, id.length())),PortalName.CENEO.toString());
 				comment.setId(commentId);
 
 				comment.setAuthor(commentElement.getElementsByClass("product-reviewer").text());
@@ -61,9 +62,9 @@ public class Parser {
 				String[] starsText = commentElement.getElementsByClass("review-score-count").text().split("/");
 				comment.setStars(Double.parseDouble(starsText[0].replace(",", ".")));
 				comment.setNumberOfOpinions(
-						Integer.parseInt(commentElement.getElementById("votes-" + commentId).text()));
+						Integer.parseInt(commentElement.getElementById("votes-" + commentId.getCommentId()).text()));
 				comment.setNumberOfPositiveOpinions(
-						Integer.parseInt(commentElement.getElementById("votes-yes-" + commentId).text()));
+						Integer.parseInt(commentElement.getElementById("votes-yes-" + commentId.getCommentId()).text()));
 
 				List<String> advantages = new ArrayList<>();
 				Elements advantagesElements = commentElement.select(".pros-cell li");
@@ -97,7 +98,9 @@ public class Parser {
 			Element currentLeftComment = leftCommentsPart.get(i);
 			{
 				String id = currentLeftComment.select("li.comment-header > h2").attr("id");
-				comment.setId(Integer.parseInt(id.substring(id.lastIndexOf("-") + 1, id.length())));
+				
+				CommentId commentId = new CommentId(Integer.parseInt(id.substring(id.lastIndexOf("-") + 1, id.length())), PortalName.MORELE.toString());
+				comment.setId(commentId);
 
 				comment.setSummary(currentLeftComment.getElementsByClass("rcomment").text());
 

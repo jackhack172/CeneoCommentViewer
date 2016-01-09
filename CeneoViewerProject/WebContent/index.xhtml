@@ -91,12 +91,12 @@
 					value="#{productCommentsView.previewComments}"
 					selectionMode="single" paginator="true" paginatorPosition="bottom"
 					rows="10" selection="#{productCommentsView.selectedPreviewComment}"
-					rowKey="#{comment.id}" ajax="true">
+					rowKey="#{comment.id.commentId}" ajax="true">
 					<f:facet name="header">
 			            Komentarze
 			        </f:facet>
 					<p:column headerText="Id">
-						<h:outputText value="#{comment.id}" />
+						<h:outputText value="#{comment.id.commentId}" />
 					</p:column>
 					<p:column headerText="Autor">
 						<h:outputText value="#{comment.author}" />
@@ -146,12 +146,12 @@
 					value="#{productCommentsView.previewComments}"
 					selectionMode="single" paginator="true" paginatorPosition="bottom"
 					rows="10" selection="#{productCommentsView.selectedPreviewComment}"
-					rowKey="#{comment.id}" ajax="true">
+					rowKey="#{comment.id.commentId}" ajax="true">
 					<f:facet name="header">
 			            Komentarze
 			        </f:facet>
 					<p:column headerText="Id">
-						<h:outputText value="#{comment.id}" />
+						<h:outputText value="#{comment.id.commentId}" />
 					</p:column>
 					<p:column headerText="Autor">
 						<h:outputText value="#{comment.author}" />

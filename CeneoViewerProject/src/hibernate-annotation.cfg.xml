@@ -25,6 +25,7 @@
 		<!-- mapping -->
 		<mapping class="hd.ceneoCommentViewer.model.Product" />
 		<mapping class="hd.ceneoCommentViewer.model.Comment" />
+		<mapping class="hd.ceneoCommentViewer.model.CommentId" />
 
 	</session-factory>
 </hibernate-configuration>
