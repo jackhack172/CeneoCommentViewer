@@ -52,6 +52,9 @@ public class ProductCommentsView implements Serializable {
 
 	@ManagedProperty("#{ceneoDownloadService}")
 	private DownloadService ceneoDownloadService;
+	
+	@ManagedProperty("#{moreleDownloadService}")
+	private DownloadService moreleDownloadService;
 
 	public void erase() {
 		List<Product> products = productService.getAllProducts();
@@ -86,6 +89,7 @@ public class ProductCommentsView implements Serializable {
 			ceneoDownloadService.downloadProductPage(productId);
 			product = Parser.parseProductFromCeneo(ceneoDownloadService.getProductPage(), productId);
 			ceneoDownloadService.downloadCommentsPages(productId);
+			moreleDownloadService.downloadCommentsPages(productId);
 		}
 	}
 
@@ -93,6 +97,9 @@ public class ProductCommentsView implements Serializable {
 		viewState = ViewState.TRANSFORM;
 		try {
 			comments = Parser.parseCommentsFromCeneo(ceneoDownloadService.getCommentsPages());
+			if(!moreleDownloadService.getCommentsPages().isEmpty()){
+				comments.addAll(Parser.parseCommentsFromMorele(moreleDownloadService.getCommentsPages()));
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -179,6 +186,14 @@ public class ProductCommentsView implements Serializable {
 
 	public void setCeneoDownloadService(DownloadService ceneoDownloadService) {
 		this.ceneoDownloadService = ceneoDownloadService;
+	}
+	
+	public DownloadService getMoreleDownloadService() {
+		return moreleDownloadService;
+	}
+
+	public void setMoreleDownloadService(DownloadService moreleDownloadService) {
+		this.moreleDownloadService = moreleDownloadService;
 	}
 
 	public ViewState getViewState() {
