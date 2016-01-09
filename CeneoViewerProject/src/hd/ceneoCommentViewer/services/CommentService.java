@@ -39,7 +39,7 @@ public class CommentService implements Serializable {
 
 	public boolean createComment(Comment comment) {
 		try {
-			if (getCommentFacade().findComment(comment.getId().getCommentId()) == null) {
+			if (getCommentFacade().findComment(comment.getId()) == null) {
 				getCommentFacade().createComment(comment);
 				return true;
 			} else {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 
+import hd.ceneoCommentViewer.model.CommentId;
 import hd.ceneoCommentViewer.utils.HibernateUtil;
 
 public abstract class GenericDAO<T> implements Serializable {
@@ -59,6 +60,11 @@ public abstract class GenericDAO<T> implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public T find(int entityID) {
+		return (T) session.get(entityClass, entityID);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public T findbyCommentId(CommentId entityID) {
 		return (T) session.get(entityClass, entityID);
 	}
 

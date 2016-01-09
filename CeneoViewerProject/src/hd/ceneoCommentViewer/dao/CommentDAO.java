@@ -9,5 +9,4 @@ public class CommentDAO extends GenericDAO<Comment>{
 	public CommentDAO() {
 		super(Comment.class);
 	}
-	
 }
