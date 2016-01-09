@@ -91,10 +91,13 @@ public class ProductCommentsView implements Serializable {
 			product = Parser.parseProductFromCeneo(ceneoDownloadService.getProductPage(), productId);
 			ceneoDownloadService.downloadCommentsPages(productId);
 			moreleDownloadService.downloadCommentsPages(productId);
+<<<<<<< HEAD
 			
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
 					"Liczba wczytanyc stron: " + ceneoDownloadService.getCommentsPages().size()));
+=======
+>>>>>>> refs/remotes/origin/web
 		}
 	}
 
@@ -105,10 +108,13 @@ public class ProductCommentsView implements Serializable {
 			if(!moreleDownloadService.getCommentsPages().isEmpty()){
 				comments.addAll(Parser.parseCommentsFromMorele(moreleDownloadService.getCommentsPages()));
 			}
+<<<<<<< HEAD
 			
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
 					"Liczba odczytanych komentarzy: " + comments.size()));
+=======
+>>>>>>> refs/remotes/origin/web
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
