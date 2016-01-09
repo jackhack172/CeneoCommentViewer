@@ -1,5 +1,6 @@
 package hd.ceneoCommentViewer.view;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.List;
@@ -11,7 +12,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.hibernate.event.spi.PreCollectionRecreateEvent;
+import org.dom4j.DocumentException;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
@@ -52,6 +53,9 @@ public class ProductCommentsView implements Serializable {
 
 	@ManagedProperty("#{ceneoDownloadService}")
 	private DownloadService ceneoDownloadService;
+	
+	@ManagedProperty("#{moreleDownloadService}")
+	private DownloadService moreleDownloadService;
 
 	public void erase() {
 		List<Product> products = productService.getAllProducts();
@@ -86,6 +90,11 @@ public class ProductCommentsView implements Serializable {
 			ceneoDownloadService.downloadProductPage(productId);
 			product = Parser.parseProductFromCeneo(ceneoDownloadService.getProductPage(), productId);
 			ceneoDownloadService.downloadCommentsPages(productId);
+			moreleDownloadService.downloadCommentsPages(productId);
+			
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
+					"Liczba wczytanyc stron: " + ceneoDownloadService.getCommentsPages().size()));
 		}
 	}
 
@@ -93,6 +102,13 @@ public class ProductCommentsView implements Serializable {
 		viewState = ViewState.TRANSFORM;
 		try {
 			comments = Parser.parseCommentsFromCeneo(ceneoDownloadService.getCommentsPages());
+			if(!moreleDownloadService.getCommentsPages().isEmpty()){
+				comments.addAll(Parser.parseCommentsFromMorele(moreleDownloadService.getCommentsPages()));
+			}
+			
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",
+					"Liczba odczytanych komentarzy: " + comments.size()));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -108,7 +124,16 @@ public class ProductCommentsView implements Serializable {
 		productService.createProduct(product);
 		previewProducts = productService.getAllProducts();
 		viewState = ViewState.BLANK;
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		facesContext.addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Liczba komentarzy zapisanych do bazy: "
+						+ comments.size() + "\nLiczba produktów zapisanyc do bazy: " + 1));
 	}
+	
+	public void preProcessPDF(Object document) throws IOException, DocumentException {
+        String csv =  (String) document;
+        System.out.println(csv);
+    }
 
 	@PostConstruct
 	public void init() {
@@ -117,14 +142,10 @@ public class ProductCommentsView implements Serializable {
 
 	public void onRowSelect(SelectEvent event) {
 		selectedPreviewProduct = (Product) event.getObject();
-		FacesMessage msg = new FacesMessage("Product selected: " + selectedPreviewProduct.getId());
-		FacesContext.getCurrentInstance().addMessage(null, msg);
 		previewComments = selectedPreviewProduct.getComments();
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
-		FacesMessage msg = new FacesMessage("Product unselected: " + ((Product) event.getObject()).getId());
-		FacesContext.getCurrentInstance().addMessage(null, msg);
 		selectedPreviewProduct = null;
 		previewComments = null;
 	}
@@ -179,6 +200,14 @@ public class ProductCommentsView implements Serializable {
 
 	public void setCeneoDownloadService(DownloadService ceneoDownloadService) {
 		this.ceneoDownloadService = ceneoDownloadService;
+	}
+	
+	public DownloadService getMoreleDownloadService() {
+		return moreleDownloadService;
+	}
+
+	public void setMoreleDownloadService(DownloadService moreleDownloadService) {
+		this.moreleDownloadService = moreleDownloadService;
 	}
 
 	public ViewState getViewState() {

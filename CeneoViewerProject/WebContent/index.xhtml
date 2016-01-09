@@ -11,36 +11,39 @@
 	<title>Insert title here</title>
 </h:head>
 <h:body>
+	<h:outputStylesheet library="css" name="style.css" target="head" />
 	<p:growl id="msgs" showDetail="true" />
 
 	<h1>Jakiś tytuł</h1>
 	<h:form id="form">
-		<p:messages id="messages" showDetail="true" autoUpdate="true"
-			closable="true" />
+		<p:growl id="messages" showDetail="true" sticky="true" closable="true" />
 
 		<p:accordionPanel id="accordionPanel" cache="true">
 			<p:tab title="Ładowanie danych">
 				<p:panel id="buttonPanel">
 					<p:inputText value="#{productCommentsView.productId}" />
-					<p:commandButton value="ETL" update="buttonPanel, productDataTable"
+					<p:commandButton value="ETL"
+						update="buttonPanel, productDataTable, hiddenCommentsDataTable, form:messages"
 						icon="ui-icon-check" actionListener="#{productCommentsView.etl}"
 						onclick="PF('pbAjax').start();" />
-					<p:commandButton value="E" update="transformButton"
+					<p:commandButton value="E" update="transformButton, form:messages"
 						icon="ui-icon-check" ajax="true"
 						actionListener="#{productCommentsView.extract}"
 						onclick="PF('pbAjax').start();" />
 					<p:commandButton id="transformButton" value="T"
-						update="buttonPanel" icon="ui-icon-check" ajax="true"
-						disabled="#{productCommentsView.isTDisabled()}"
+						update="buttonPanel, form:messages" icon="ui-icon-check"
+						ajax="true" disabled="#{productCommentsView.isTDisabled()}"
 						actionListener="#{productCommentsView.transform}" />
-					<p:commandButton value="L" update="buttonPanel, productDataTable"
+					<p:commandButton value="L"
+						update="buttonPanel, productDataTable, hiddenCommentsDataTable, form:messages"
 						icon="ui-icon-check" ajax="true"
 						disabled="#{productCommentsView.isLDisabled()}"
 						actionListener="#{productCommentsView.load}"
 						onclick="PF('pbAjax').start();" />
 					<p:commandButton value="Erase database"
-						update="buttonPanel, productDataTable, commentsDataTable" icon="ui-icon-check"
-						ajax="true" actionListener="#{productCommentsView.erase}"
+						update="buttonPanel, productDataTable, commentsDataTable, hiddenCommentsDataTable, form:messages"
+						icon="ui-icon-check" ajax="true"
+						actionListener="#{productCommentsView.erase}"
 						onclick="PF('pbAjax').start();" />
 					<p:progressBar widgetVar="pbAjax" ajax="true"
 						value="#{productCommentsView.ceneoDownloadService.progress}"
@@ -63,10 +66,10 @@
 			        </f:facet>
 					<p:ajax event="rowSelect"
 						listener="#{productCommentsView.onRowSelect}"
-						update="form:messages, :form:accordionPanel:commentsDataTable" />
+						update="form:messages, :form:accordionPanel:commentsDataTable, :form:accordionPanel:hiddenCommentsDataTable," />
 					<p:ajax event="rowUnselect"
 						listener="#{productCommentsView.onRowUnselect}"
-						update="form:messages, :form:accordionPanel:commentsDataTable" />
+						update="form:messages, :form:accordionPanel:commentsDataTable, :form:accordionPanel:hiddenCommentsDataTable" />
 					<p:column headerText="Id">
 						<h:outputText value="#{product.id}" />
 					</p:column>
@@ -137,6 +140,51 @@
 						<h:outputText value="#{comment.numberOfOpinions}" />
 					</p:column>
 				</p:dataTable>
+
+				<p:dataTable id="hiddenCommentsDataTable"
+					styleClass="hiddenCommentsDataTable" var="comment"
+					value="#{productCommentsView.previewComments}"
+					selectionMode="single" paginator="true" paginatorPosition="bottom"
+					rows="10" selection="#{productCommentsView.selectedPreviewComment}"
+					rowKey="#{comment.id}" ajax="true">
+					<f:facet name="header">
+			            Komentarze
+			        </f:facet>
+					<p:column headerText="Id">
+						<h:outputText value="#{comment.id}" />
+					</p:column>
+					<p:column headerText="Autor">
+						<h:outputText value="#{comment.author}" />
+					</p:column>
+					<p:column headerText="Ocena">
+						<h:outputText value="#{comment.stars}" />
+					</p:column>
+					<p:column headerText="Data">
+						<h:outputText value="#{comment.date}" />
+					</p:column>
+					<p:column headerText="Zalety">
+						<h:outputText value="#{comment.advantages}" />
+					</p:column>
+					<p:column headerText="Wady">
+						<h:outputText value="#{comment.disadvantages}" />
+					</p:column>
+					<p:column headerText="Treść">
+						<h:outputText value="#{comment.summary}" />
+					</p:column>
+					<p:column headerText="Pozytywne opinie">
+						<h:outputText value="#{comment.numberOfPositiveOpinions}" />
+					</p:column>
+					<p:column headerText="Opinie">
+						<h:outputText value="#{comment.numberOfOpinions}" />
+					</p:column>
+				</p:dataTable>
+
+				<h:commandLink id="csv">
+					<h:outputText value="Export to CSV" />
+					<p:dataExporter type="csv"
+						target="form:accordionPanel:hiddenCommentsDataTable"
+						fileName="comments" />
+				</h:commandLink>
 
 				<p:overlayPanel widgetVar="commentAdvantages" showEffect="fade"
 					hideEffect="fade" dismissable="false" showCloseIcon="true">
