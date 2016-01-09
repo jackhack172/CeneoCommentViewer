@@ -22,6 +22,8 @@ import hd.ceneoCommentViewer.model.Product;
 @ApplicationScoped
 public class ProductService implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	private ProductFacade productFacade;
 
 	public ProductFacade getProductFacade() {
@@ -34,9 +36,23 @@ public class ProductService implements Serializable {
 	public void createProduct(Product product) {
 		try {
 			getProductFacade().createProduct(product);
-			System.out.println("Dodano Produkt " + product.getModel());
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void updateProduct(Product product) {
+		try {
+			getProductFacade().updateProduct(product);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteAllProducts() {
+		List<Product> products = getProductFacade().listAll();
+		for (Product product : products) {
+			getProductFacade().deleteProdukt(product);
 		}
 	}
 

@@ -19,6 +19,9 @@ public class ProductFacade implements Serializable {
 	}
 
 	public void updateProduct(Product product) {
+		productDAO.beginTransaction();
+		productDAO.update(product);
+		productDAO.commitAndCloseTransaction();
 	}
 
 	public Product findProduct(int productId) {
@@ -33,5 +36,8 @@ public class ProductFacade implements Serializable {
 	}
 
 	public void deleteProdukt(Product product) {
+		productDAO.beginTransaction();
+		productDAO.delete(product);
+		productDAO.commitAndCloseTransaction();
 	}
 }

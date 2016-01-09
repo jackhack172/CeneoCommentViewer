@@ -5,6 +5,7 @@ import java.util.List;
 
 import hd.ceneoCommentViewer.dao.CommentDAO;
 import hd.ceneoCommentViewer.model.Comment;
+import hd.ceneoCommentViewer.model.Product;
 
 public class CommentFacade implements Serializable {
 
@@ -23,5 +24,11 @@ public class CommentFacade implements Serializable {
 		List<Comment> result = commentDAO.findAll();
 		commentDAO.closeTransaction();
 		return result;
+	}
+
+	public void deleteComment(Comment comment) {
+		commentDAO.beginTransaction();
+		commentDAO.delete(comment);
+		commentDAO.commitAndCloseTransaction();
 	}
 }

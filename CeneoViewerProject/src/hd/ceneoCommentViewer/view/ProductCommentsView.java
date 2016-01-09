@@ -11,6 +11,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.hibernate.event.spi.PreCollectionRecreateEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
@@ -51,6 +52,25 @@ public class ProductCommentsView implements Serializable {
 
 	@ManagedProperty("#{ceneoDownloadService}")
 	private DownloadService ceneoDownloadService;
+
+	public void erase() {
+		List<Product> products = productService.getAllProducts();
+		for (Product product : products) {
+			product.getComments().clear();
+			productService.updateProduct(product);
+		}
+
+		productService.deleteAllProducts();
+		previewProducts = productService.getAllProducts();
+		selectedPreviewProduct = null;
+		
+		commentService.deleteAllComments();
+		previewComments = null;
+
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		facesContext.addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Baza zostala wyczyszczona."));
+	}
 
 	public void etl() {
 		if (productId != null) {
@@ -193,6 +213,14 @@ public class ProductCommentsView implements Serializable {
 
 	public boolean isLoadViewState() {
 		return viewState == ViewState.LOAD;
+	}
+
+	public boolean isTDisabled() {
+		return !isExtractViewState();
+	}
+
+	public boolean isLDisabled() {
+		return !isTransformViewState();
 	}
 
 	public List<Comment> getPreviewComments() {

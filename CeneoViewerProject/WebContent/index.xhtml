@@ -13,16 +13,15 @@
 <h:body>
 	<p:growl id="msgs" showDetail="true" />
 
-	<h3>Jakiś tytuł</h3>
+	<h1>Jakiś tytuł</h1>
 	<h:form id="form">
 		<p:messages id="messages" showDetail="true" autoUpdate="true"
 			closable="true" />
 
 		<p:accordionPanel id="accordionPanel" cache="true">
 			<p:tab title="Ładowanie danych">
-				<p:inputText value="#{productCommentsView.productId}" />
-
 				<p:panel id="buttonPanel">
+					<p:inputText value="#{productCommentsView.productId}" />
 					<p:commandButton value="ETL" update="buttonPanel, productDataTable"
 						icon="ui-icon-check" actionListener="#{productCommentsView.etl}"
 						onclick="PF('pbAjax').start();" />
@@ -32,10 +31,16 @@
 						onclick="PF('pbAjax').start();" />
 					<p:commandButton id="transformButton" value="T"
 						update="buttonPanel" icon="ui-icon-check" ajax="true"
+						disabled="#{productCommentsView.isTDisabled()}"
 						actionListener="#{productCommentsView.transform}" />
 					<p:commandButton value="L" update="buttonPanel, productDataTable"
 						icon="ui-icon-check" ajax="true"
+						disabled="#{productCommentsView.isLDisabled()}"
 						actionListener="#{productCommentsView.load}"
+						onclick="PF('pbAjax').start();" />
+					<p:commandButton value="Erase database"
+						update="buttonPanel, productDataTable, commentsDataTable" icon="ui-icon-check"
+						ajax="true" actionListener="#{productCommentsView.erase}"
 						onclick="PF('pbAjax').start();" />
 					<p:progressBar widgetVar="pbAjax" ajax="true"
 						value="#{productCommentsView.ceneoDownloadService.progress}"
@@ -48,7 +53,6 @@
 				<br />
 			</p:tab>
 			<p:tab title="Podgląd">
-				<h1>test</h1>
 				<p:dataTable id="productDataTable" var="product"
 					value="#{productCommentsView.previewProducts}"
 					selectionMode="single" paginator="true" paginatorPosition="bottom"

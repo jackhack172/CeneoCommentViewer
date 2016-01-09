@@ -18,10 +18,13 @@ import org.jsoup.select.Elements;
 
 import hd.ceneoCommentViewer.facade.CommentFacade;
 import hd.ceneoCommentViewer.model.Comment;
+import hd.ceneoCommentViewer.model.Product;
 
 @ManagedBean(name = "commentService")
 @ApplicationScoped
 public class CommentService implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private CommentFacade commentFacade;
 
@@ -38,6 +41,13 @@ public class CommentService implements Serializable {
 			System.out.println("Dodano komentarz " + comment.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void deleteAllComments() {
+		List<Comment> comments = getCommentFacade().listAll();
+		for (Comment comment : comments) {
+			getCommentFacade().deleteComment(comment);
 		}
 	}
 
