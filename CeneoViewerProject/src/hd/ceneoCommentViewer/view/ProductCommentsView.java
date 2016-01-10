@@ -23,40 +23,84 @@ import hd.ceneoCommentViewer.services.DownloadService;
 import hd.ceneoCommentViewer.services.ProductService;
 import hd.ceneoCommentViewer.utils.Parser;
 
+/**
+ * 
+ * Klasa zawierająca dane i metody dla widoku.
+ *
+ */
 @ManagedBean(name = "productCommentsView")
 @ViewScoped
 public class ProductCommentsView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Aktualny stan widoku.
+	 */
 	private ViewState viewState = ViewState.BLANK;
 
+	/**
+	 * Pobrane komentarze.
+	 */
 	private List<Comment> comments;
 
+	/**
+	 * Pobrany produkt.
+	 */
 	private Product product;
 
+	/**
+	 * Id pobranego produktu.
+	 */
 	private Integer productId;
 
+	/**
+	 * Aktualnie przeglądane komentarze.
+	 */
 	private List<Comment> previewComments;
 
+	/**
+	 * Przeglądane produkty.
+	 */
 	private List<Product> previewProducts;
 
+	/**
+	 * Produkt wybrany do objerzenia.
+	 */
 	private Product selectedPreviewProduct;
 
+	/**
+	 * Komentarz wybrany do objerzenia.
+	 */
 	private Comment selectedPreviewComment;
 
+	/**
+	 * Serwis zarządzjący komentarzami.
+	 */
 	@ManagedProperty("#{commentService}")
 	private CommentService commentService;
 
+	/**
+	 * Serwis zarządzjący produktami.
+	 */
 	@ManagedProperty("#{productService}")
 	private ProductService productService;
 
+	/**
+	 * Serwis pobierający strony z www.ceneo.pl.
+	 */
 	@ManagedProperty("#{ceneoDownloadService}")
 	private DownloadService ceneoDownloadService;
 
+	/**
+	 * Serwis pobierający strony z www.morele.net.
+	 */
 	@ManagedProperty("#{moreleDownloadService}")
 	private DownloadService moreleDownloadService;
 
+	/**
+	 * Metoda czyszcząca bazę danych.
+	 */
 	public void erase() {
 		List<Product> products = productService.getAllProducts();
 		for (Product product : products) {
@@ -76,6 +120,9 @@ public class ProductCommentsView implements Serializable {
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Baza zostala wyczyszczona."));
 	}
 
+	/**
+	 * Metoda wykonująca process ETL.
+	 */
 	public void etl() {
 		if (productId != null) {
 			try {
@@ -90,6 +137,10 @@ public class ProductCommentsView implements Serializable {
 		}
 	}
 
+	/**
+	 * Metoda wykonująca process Extract.
+	 * @throws IOException Zwraca błąd jeżeli produkt nie istnieje.
+	 */
 	public void extract() throws IOException {
 		if (productId != null) {
 			viewState = ViewState.EXTRACT;
@@ -107,6 +158,9 @@ public class ProductCommentsView implements Serializable {
 		}
 	}
 
+	/**
+	 * Metoda wykonująca process Transform.
+	 */
 	public void transform() {
 		viewState = ViewState.TRANSFORM;
 		try {
@@ -123,6 +177,9 @@ public class ProductCommentsView implements Serializable {
 		}
 	}
 
+	/**
+	 * Metoda wykonująca process Load.
+	 */
 	public void load() {
 		int recordsNumber = 0;
 		viewState = ViewState.LOAD;
@@ -143,16 +200,27 @@ public class ProductCommentsView implements Serializable {
 				"Liczba rekordów zapisanych do bazy: " + recordsNumber));
 	}
 
+	/**
+	 * Metoda pobiera z bazy danych aktualną listę produktów.
+	 */
 	@PostConstruct
 	public void init() {
 		previewProducts = productService.getAllProducts();
 	}
 
+	/**
+	 * Metoda pobierajaca komentarze dla wybranego produktu.
+	 * @param event Zdarzenie wybrania produktu.
+	 */
 	public void onRowSelect(SelectEvent event) {
 		selectedPreviewProduct = (Product) event.getObject();
 		previewComments = selectedPreviewProduct.getComments();
 	}
 
+	/**
+	 * Metoda usuwajaca zaznaczenie produktu.
+	 * @param event Zdarzenie odznaczenia produktu.
+	 */
 	public void onRowUnselect(UnselectEvent event) {
 		selectedPreviewProduct = null;
 		previewComments = null;
@@ -292,6 +360,11 @@ public class ProductCommentsView implements Serializable {
 		this.selectedPreviewComment = selectedPreviewComment;
 	}
 
+	/**
+	 * 
+	 * Stany w jakich może byc widok.
+	 *
+	 */
 	public enum ViewState {
 		BLANK, EXTRACT, TRANSFORM, LOAD;
 	}

@@ -15,10 +15,24 @@ import hd.ceneoCommentViewer.model.Comment;
 import hd.ceneoCommentViewer.model.CommentId;
 import hd.ceneoCommentViewer.model.Product;
 
+/**
+ * 
+ * Klasa zawiera metody służące do wyciągania danych o produktach i komentarzach ze stron internetowych.
+ *
+ */
 public class Parser {
 	
+	/**
+	 * Formater daty.
+	 */
 	protected static SimpleDateFormat PARSER_SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+	/**
+	 * Metoda wyciąga dane na temat produktu z serwisu ceneo.
+	 * @param productPage Strona z produktem.
+	 * @param productId Id produktu.
+	 * @return Produkt.
+	 */
 	public static Product parseProductFromCeneo(Document productPage, Integer productId) {
 		Product product = null;
 
@@ -41,6 +55,12 @@ public class Parser {
 		return product;
 	}
 
+	/**
+	 * Metoda wyciąga dane na temat komentarzy z serwisu ceneo.
+	 * @param commentsPages Lista stron z komentarzami.
+	 * @return Lista komentarzy.
+	 * @throws ParseException Błąd parsowania danych.
+	 */
 	public static List<Comment> parseCommentsFromCeneo(List<Document> commentsPages) throws ParseException {
 		List<Comment> comments = new ArrayList<>();
 
@@ -85,6 +105,12 @@ public class Parser {
 		return comments;
 	}
 
+	/**
+	 * Metoda wyciąga dane na temat komentarzy z serwisu morele.
+	 * @param commentsPages Lista stron z komentarzami.
+	 * @return Lista komentarzy.
+	 * @throws ParseException Błąd parsowania danych.
+	 */
 	public static List<Comment> parseCommentsFromMorele(List<Document> commentsPages) throws ParseException {
 		
 		List<Comment> comments = new ArrayList<>();

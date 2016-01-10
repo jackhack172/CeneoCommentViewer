@@ -20,18 +20,35 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+/**
+ * 
+* Serwis pozwala pobrać dane ze strony www.morele.net.
+ *
+ */
 @ManagedBean(name = "moreleDownloadService")
 @ApplicationScoped
 public class MoreleDownloadService extends DownloadService implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Główny link.
+	 */
 	private static String mainLink = "http://www.ceneo.pl/";
 
+	/**
+	 * Link do podstrony z serwisami zawierającymi produkt.
+	 */
 	private static String commentsClickPageLinkPart = "#tab=click";
 
+	/**
+	 * Link zawierajacy opis produktu.
+	 */
 	private static String commentsSpecPageLinkPart = "#tab=spec";
 
+	/**
+	 * Metoda pobiera stronę z produktem.
+	 */
 	@Override
 	public void downloadProductPage(Integer productId) {
 		try {
@@ -41,6 +58,9 @@ public class MoreleDownloadService extends DownloadService implements Serializab
 		}
 	}
 
+	/**
+	 * Metoda pobiera strony z komentarzami.
+	 */
 	@Override
 	public void downloadCommentsPages(Integer productId) {
 		commentsPages = new ArrayList<>();

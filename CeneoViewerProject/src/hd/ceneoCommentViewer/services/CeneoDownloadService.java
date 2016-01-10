@@ -12,28 +12,53 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+/**
+ * 
+ * Serwis pozwala pobrać dane ze strony www.ceneo.pl.
+ *
+ */
 @ManagedBean(name = "ceneoDownloadService")
 @ApplicationScoped
 public class CeneoDownloadService extends DownloadService implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Liczba komentarzy na podstronie.
+	 */
 	private static int COMMENTS_PER_PAGE = 10;
 
+	/**
+	 * Główny link.
+	 */
 	private static String mainLink = "http://www.ceneo.pl/";
 
+	/**
+	 * Link do pierwszej strony z komentarzami.
+	 */
 	private static String commentsFirstPageLinkPart = "#tab=reviews_scroll";
 
+	/**
+	 * Link do podstron z komentarzami.
+	 */
 	private static String commentsNextPagesLinkPart = "/opinie-";
 
+	/**
+	 * Link zawierajacy opis produktu.
+	 */
 	private static String commentsSpecPageLinkPart = "#tab=spec";
 
+	/**
+	 * Metoda pobiera stronę z produktem.
+	 */
 	@Override
 	public void downloadProductPage(Integer productId) throws IOException {
 		productPage = Jsoup.connect(mainLink + productId + commentsSpecPageLinkPart).get();
-
 	}
 
+	/**
+	 * Metoda pobiera strony z komentarzami.
+	 */
 	@Override
 	public void downloadCommentsPages(Integer productId) {
 		commentsPages = new ArrayList<>();

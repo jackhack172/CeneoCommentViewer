@@ -15,33 +15,70 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.Type;
 
+/**
+ * 
+ *	Klasa reprezentujaca encje komentarz.
+ *
+ */
 @Entity
 public class Comment implements Serializable {
 
 	private static final long serialVersionUID = -5314336457766591759L;
 	
+	/**
+	 * Id komentarza.
+	 */
 	private CommentId id;
 
+	/**
+	 * Zalety produktu opisanego w komentarzu.
+	 */
 	private List<String> advantages;
 
+	/**
+	 * Wady produktu opisanego w komentarzu.
+	 */
 	private List<String> disadvantages;
 
+	/**
+	 * Podsumowanie.
+	 */
 	private String summary;
 
+	/**
+	 * Ocena produktu opisanego w komentarzu.
+	 */
 	private Double stars;
 
+	/**
+	 * Autor komentarza.
+	 */
 	private String author;
 
+	/**
+	 * Data dodania komentarza.
+	 */
 	private Date date;
 
+	/**
+	 * Informacja czy produktu opisanego w komentarzu jest polecany.
+	 */
 	private Boolean recommended;
 
+	/**
+	 * Liczba pozytywnych opinii o komentarzu.
+	 */
 	private Integer numberOfPositiveOpinions;
 
+	/**
+	 * Liczba opinni o komentarzu.
+	 */
 	private Integer numberOfOpinions;
 
+	/**
+	 * Konstruktor.
+	 */
 	public Comment() {
-
 	}
 
 	@EmbeddedId

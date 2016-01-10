@@ -22,14 +22,26 @@ import hd.ceneoCommentViewer.facade.CommentFacade;
 import hd.ceneoCommentViewer.model.Comment;
 import hd.ceneoCommentViewer.model.Product;
 
+/**
+ * 
+ * Serwis odczytujący i zapisujący dane do bazy danych dotyczące komentarzy.
+ *
+ */
 @ManagedBean(name = "commentService")
 @ApplicationScoped
 public class CommentService implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 *  Obiekt służący do wymiany informacji z bazą danych.
+	 */
 	private CommentFacade commentFacade;
 
+	/**
+	 * Metoda tworzy i zwraca obiekt służący do wymiany informacji z bazą.
+	 * @return Obiekt służący do wymiany informacji o komentarzu.
+	 */
 	public CommentFacade getCommentFacade() {
 		if (commentFacade == null) {
 			commentFacade = new CommentFacade();
@@ -37,6 +49,11 @@ public class CommentService implements Serializable {
 		return commentFacade;
 	}
 
+	/**
+	 * Metoda zapisuje komentarz do bazy danych.
+	 * @param comment Zapisywany komentarz.
+	 * @return Zwraca true jeśli komentarz nie istniał w bazie.
+	 */
 	public boolean createComment(Comment comment) {
 		try {
 			if (getCommentFacade().findComment(comment.getId()) == null) {
@@ -52,6 +69,10 @@ public class CommentService implements Serializable {
 		return false;
 	}
 
+	/**
+	 * Metoda uaktualnia dane o komentarzu.
+	 * @param comment Uaktualniany komentarz
+	 */
 	public void updateComment(Comment comment) {
 		try {
 			getCommentFacade().updateComment(comment);
@@ -60,6 +81,9 @@ public class CommentService implements Serializable {
 		}
 	}
 
+	/**
+	 * Metoda usuwa wszytkie komentarze
+	 */
 	public void deleteAllComments() {
 		List<Comment> comments = getCommentFacade().listAll();
 		for (Comment comment : comments) {
@@ -67,6 +91,10 @@ public class CommentService implements Serializable {
 		}
 	}
 
+	/**
+	 * Metoda zwraca wszystkie komentarze
+	 * @return Lista komentarzy
+	 */
 	public List<Comment> getAllComments() {
 		return getCommentFacade().listAll();
 	}

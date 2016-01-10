@@ -10,23 +10,49 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * 
+ * Klasa reprezentujaca encje produkt.
+ *
+ */
 @Entity
 public class Product implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Id produktu.
+	 */
 	private Integer id;
 	
+	/**
+	 * Rodzaj produktu.
+	 */
 	private String type;
 	
+	/**
+	 * Marka produktu.
+	 */
 	private String brand;
 	
+	/**
+	 * Model produktu.
+	 */
 	private String model;
 	
+	/**
+	 * Dodatkowe uwagi.
+	 */
 	private String additionalInfo;
 	
+	/**
+	 * Lista komentarzy.
+	 */
 	private List<Comment> comments;
 
+	/**
+	 * Konstruktor.
+	 */
 	public Product() {
 
 	}
